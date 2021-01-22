@@ -48,7 +48,7 @@ BitMatrix表示按位表示的二维矩阵数组，元素的值用true和false�
 ##BS 客户端代码  >= .Net4.5
 
 #安装Nuget Fleck    
-
+```
 using Fleck;
 using System;
 using System.Collections.Generic;
@@ -99,7 +99,7 @@ namespace WebSocketPrint
     }
 }
 
-
+```
 
 
 
