@@ -44,3 +44,67 @@ BitMatrix表示按位表示的二维矩阵数组，元素的值用true和false�
 * 5.保存配置后可以“打印预览”，也可以直接“打印”
 * 6.“读取配置”用于直接读取之前设计好的模板打印样式，文件保存在程序根目录中，默认模板为KopSoft.KopSoftPrint.PrintConfig.xml
 
+
+##BS 客户端代码  >= .Net4.5
+
+#安装Nuget Fleck    
+
+using Fleck;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WebSocketPrint
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var allSockets = new List<IWebSocketConnection>();
+            var server = new WebSocketServer("ws://192.168.206.163:50000");
+            server.Start(socket =>
+            {
+                socket.OnOpen = () =>
+                {
+                    Console.WriteLine("Open!");
+                    allSockets.Add(socket);
+                };
+                socket.OnClose = () =>
+                {
+                    Console.WriteLine("Close!");
+                    allSockets.Remove(socket);
+                };
+                socket.OnMessage = message =>
+                {
+                   //此处可处理打印逻辑
+                    Console.WriteLine(message);
+                    allSockets.ToList().ForEach(s => s.Send("Echo: " + message));
+                };
+            });
+
+
+            var input = Console.ReadLine();
+            while (input != "exit")
+            {
+                foreach (var socket in allSockets.ToList())
+                {
+                    socket.Send(input);
+                }
+                input = Console.ReadLine();
+            }
+
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
